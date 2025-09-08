@@ -2,7 +2,7 @@
 
 A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to upload PDF documents and have isolated conversations about each document. Each chat session is tied to a specific document, ensuring clean separation of context and preventing cross-document contamination.
 
-## 🚀 Features
+##  Features
 
 - **Document Isolation**: Each chat window handles only one document
 - **Multiple Document Support**: Upload and manage multiple PDF documents simultaneously
@@ -11,7 +11,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 - **Real-time Processing**: Fast PDF processing with chunking and embedding generation
 - **Modern UI**: Clean, responsive interface built with Streamlit
 
-## 📋 Setup Steps
+##  Setup Steps
 
 ### Prerequisites
 
@@ -70,7 +70,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
    ```
    The web interface will be available at `http://localhost:8501`
 
-## 🏗️ Architecture & Models
+##  Architecture & Models
 
 ### Models Used
 
@@ -100,7 +100,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 - **Similarity Search**: Cosine similarity for semantic matching
 - **Persistence**: Data survives application restarts
 
-## 💬 Conversation History Management
+##  Conversation History Management
 
 ### Chat Isolation
 - Each chat session is tied to a specific document ID
@@ -136,7 +136,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 - `DELETE /reset-vector-store` - Reset all documents
 - `GET /health` - Health check
 
-## 🎯 How It Works
+##  How It Works
 
 1. **Document Upload**: PDF is processed, chunked, and embedded
 2. **Document Selection**: User selects a document from the sidebar
@@ -165,7 +165,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 - **Large Documents**: Very large PDFs (>100 pages) may take longer to process
 - **Concurrent Users**: Backend is not optimized for high concurrency
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 1. **API Key Issues**
