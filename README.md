@@ -54,7 +54,6 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
    ```
 
 5. **Get API Keys**
-   - **Hugging Face**: Sign up at [huggingface.co](https://huggingface.co) and create an access token
    - **Google AI**: Get API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ### Running the Application
@@ -149,10 +148,10 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 ## ⚠️ Known Limitations
 
 ### Technical Limitations
-- **SQLite Version**: Requires SQLite 3.35.0+ for ChromaDB compatibility
 - **Memory Usage**: Large PDFs may consume significant memory during processing
 - **API Rate Limits**: Google AI API has rate limits for free tier
 - **Browser Storage**: Chat history is not persistent across browser sessions
+- **Python environment**: Two different environments has to be created for frontend and backend due to dependency conflicts between streamlit, photobuf and google-generativeai libraries
 
 ### Functional Limitations
 - **Single Document per Chat**: Cannot ask questions across multiple documents simultaneously
@@ -169,43 +168,14 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 ## 🛠️ Troubleshooting
 
 ### Common Issues
-
-1. **SQLite Version Error**
-   ```bash
-   # Check SQLite version
-   python -c "import sqlite3; print(sqlite3.sqlite_version)"
-   # If < 3.35.0, consider using Docker or updating system SQLite
-   ```
-
-2. **API Key Issues**
+1. **API Key Issues**
    - Verify API keys in `.env` file
    - Check API key permissions and quotas
 
-3. **Memory Issues**
+2. **Memory Issues**
    - Reduce chunk size in `config.py`
    - Process smaller documents
 
-4. **Backend Connection**
+3. **Backend Connection**
    - Ensure backend is running on correct port
-   - Check firewall settings
 
-## 📁 Project Structure
-
-```
-rag-pdf-chatbot/
-├── modules/
-│   ├── embedding_service.py    # Local embedding generation
-│   ├── llm_service.py         # Google AI integration
-│   ├── pdf_loader.py          # PDF processing and chunking
-│   ├── rag_service.py         # Main RAG orchestration
-│   └── vector_store.py        # ChromaDB management
-├── storage/
-│   └── chroma_db/             # Vector database storage
-├── app_backend.py             # FastAPI backend
-├── app_streamlit.py           # Streamlit frontend
-├── config.py                  # Configuration settings
-├── requirements.txt           # Python dependencies
-├── start_backend.py           # Backend startup script
-├── start_frontend.py          # Frontend startup script
-└── README.md                  # This file
-```
