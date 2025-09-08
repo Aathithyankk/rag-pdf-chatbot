@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class GeminiLLMService:
-    """Gemini 2.5 Flash LLM service for generating responses"""
+    """Gemini 2.0 Flash LLM service for generating responses"""
     
     def __init__(self, api_key: str = None, model_name: str = "gemini-2.0-flash-exp"):
         """
