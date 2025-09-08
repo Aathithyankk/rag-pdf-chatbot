@@ -1,5 +1,6 @@
 import os
 import multiprocessing
+import torch
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -36,5 +37,17 @@ class Config:
     RELOAD = os.getenv("RELOAD", "false").lower() == "true"
     
     # Local Embedding Configuration
-    EMBEDDING_DEVICE = os.getenv("EMBEDDING_DEVICE", "auto")  # auto, cpu, cuda
+    @classmethod
+    def get_embedding_device(cls):
+        """Get the appropriate device for embeddings"""
+        device_setting = os.getenv("EMBEDDING_DEVICE", "auto")
+        
+        if device_setting == "auto":
+            return "cuda" if torch.cuda.is_available() else "cpu"
+        elif device_setting in ["cpu", "cuda", "mps"]:
+            return device_setting
+        else:
+            # Fallback to auto-detection
+            return "cuda" if torch.cuda.is_available() else "cpu"
+    
     USE_LOCAL_EMBEDDINGS = os.getenv("USE_LOCAL_EMBEDDINGS", "true").lower() == "true"

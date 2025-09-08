@@ -1,7 +1,7 @@
 # Core dependencies
 fastapi==0.104.1
 uvicorn
-streamlit==1.28.1
+# streamlit==1.28.1
 requests==2.31.0
 
 # Performance optimizations (optional)
@@ -20,6 +20,7 @@ posthog==3.0.0  # Add this to ensure compatibility
 sentence-transformers
 torch>=1.9.0
 transformers>=4.20.0
+protobuf==5.26.1
 
 # Environment and configuration
 python-dotenv

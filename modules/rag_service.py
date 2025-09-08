@@ -45,13 +45,13 @@ class RAGService:
             logger.info("Using local embedding service")
             self.embedding_service = LocalEmbeddingService(
                 model_name=embedding_model,
-                device=Config.EMBEDDING_DEVICE
+                device=Config.get_embedding_device()
             )
         else:
             logger.info("Using Hugging Face API embedding service")
             self.embedding_service = LocalEmbeddingService(
                 model_name=embedding_model,
-                device=Config.EMBEDDING_DEVICE
+                device=Config.get_embedding_device()
             )
         
         # Initialize LLM service
