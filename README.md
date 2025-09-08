@@ -125,7 +125,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 }
 ```
 
-## 🔧 API Endpoints
+## API Endpoints
 
 - `POST /upload-pdf` - Upload and process PDF documents
 - `POST /ask` - Ask questions (requires document_id)
@@ -145,7 +145,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 5. **Response Generation**: LLM generates answer using retrieved context
 6. **Source Attribution**: Sources with page numbers are displayed
 
-## ⚠️ Known Limitations
+##  Known Limitations
 
 ### Technical Limitations
 - **Memory Usage**: Large PDFs may consume significant memory during processing
