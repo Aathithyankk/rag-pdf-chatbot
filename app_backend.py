@@ -35,6 +35,7 @@ app.add_middleware(
 # Pydantic models
 class QuestionRequest(BaseModel):
     question: str
+    document_id: str
     chat_history: Optional[List[Dict]] = []
     n_results: Optional[int] = 5
 
@@ -44,6 +45,7 @@ class QuestionResponse(BaseModel):
     sources: List[Dict]
     context_used: str
     similar_docs_found: Optional[int] = 0
+    document_id: str
 
 class ProcessPDFResponse(BaseModel):
     success: bool
@@ -51,11 +53,19 @@ class ProcessPDFResponse(BaseModel):
     pages_processed: int
     chunks_created: int
     filename: Optional[str] = None
+    document_id: str
 
 class VectorStoreInfo(BaseModel):
-    collection_name: str
-    document_count: int
+    total_documents: int
+    total_chunks: int
+    documents: List[Dict]
     persist_directory: str
+
+class DocumentInfo(BaseModel):
+    document_id: str
+    document_name: str
+    chunk_count: int
+    exists: bool
 
 class TestResponse(BaseModel):
     embedding_service: Dict
@@ -104,18 +114,18 @@ async def upload_pdf(
         file: PDF file to upload
         
     Returns:
-        Processing result
+        Processing result with document_id
     """
     try:
         # Validate file type
         if not file.filename.lower().endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
         
-        # Process the PDF
+        # Process the PDF (document_id will be generated automatically)
         result = rag.process_pdf(file)
         
         if result["success"]:
-            logger.info(f"Successfully processed PDF: {file.filename}")
+            logger.info(f"Successfully processed PDF: {file.filename} with document_id: {result['document_id']}")
             return ProcessPDFResponse(**result)
         else:
             logger.error(f"Failed to process PDF: {result['message']}")
@@ -136,7 +146,7 @@ async def ask_question(
     Ask a question and get an answer using RAG
     
     Args:
-        request: Question request with question text and chat history
+        request: Question request with question text, document_id, and chat history
         
     Returns:
         Answer with sources and context
@@ -144,15 +154,16 @@ async def ask_question(
     try:
         result = rag.ask_question(
             question=request.question,
+            document_id=request.document_id,
             chat_history=request.chat_history,
             n_results=request.n_results
         )
         
         if result["success"]:
-            logger.info(f"Successfully answered question: {request.question[:50]}...")
+            logger.info(f"Successfully answered question for document {request.document_id}: {request.question[:50]}...")
             return QuestionResponse(**result)
         else:
-            logger.warning(f"Failed to answer question: {result.get('answer', 'Unknown error')}")
+            logger.warning(f"Failed to answer question for document {request.document_id}: {result.get('answer', 'Unknown error')}")
             return QuestionResponse(**result)
             
     except Exception as e:
@@ -191,6 +202,60 @@ async def reset_vector_store(rag: RAGService = Depends(get_rag_service)):
     except Exception as e:
         logger.error(f"Error resetting vector store: {e}")
         raise HTTPException(status_code=500, detail=f"Error resetting vector store: {str(e)}")
+
+@app.get("/documents", response_model=List[Dict])
+async def list_documents(rag: RAGService = Depends(get_rag_service)):
+    """
+    List all available documents
+    
+    Returns:
+        List of documents with metadata
+    """
+    try:
+        documents = rag.list_documents()
+        return documents
+    except Exception as e:
+        logger.error(f"Error listing documents: {e}")
+        raise HTTPException(status_code=500, detail=f"Error listing documents: {str(e)}")
+
+@app.get("/documents/{document_id}", response_model=DocumentInfo)
+async def get_document_info(document_id: str, rag: RAGService = Depends(get_rag_service)):
+    """
+    Get information about a specific document
+    
+    Args:
+        document_id: Document identifier
+        
+    Returns:
+        Document information
+    """
+    try:
+        info = rag.get_vector_store_info(document_id)
+        return DocumentInfo(**info)
+    except Exception as e:
+        logger.error(f"Error getting document info: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting document info: {str(e)}")
+
+@app.delete("/documents/{document_id}")
+async def delete_document(document_id: str, rag: RAGService = Depends(get_rag_service)):
+    """
+    Delete a specific document
+    
+    Args:
+        document_id: Document identifier
+        
+    Returns:
+        Success message
+    """
+    try:
+        success = rag.delete_document(document_id)
+        if success:
+            return {"message": f"Document {document_id} deleted successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to delete document")
+    except Exception as e:
+        logger.error(f"Error deleting document: {e}")
+        raise HTTPException(status_code=500, detail=f"Error deleting document: {str(e)}")
 
 @app.get("/test-services", response_model=TestResponse)
 async def test_services(rag: RAGService = Depends(get_rag_service)):
