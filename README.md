@@ -76,7 +76,7 @@ A sophisticated Retrieval-Augmented Generation (RAG) chatbot that allows you to 
 
 - **Embedding Model**: `sentence-transformers/all-mpnet-base-v2`
   - Local model for fast, offline embedding generation
-  - 768-dimensional embeddings
+  - 384-dimensional embeddings
   - Optimized for semantic similarity search
 
 - **LLM Model**: `gemini-2.0-flash`
